@@ -108,7 +108,7 @@ class BigBrain {
         this.lines.forEach(function(l, i, obj){
             if ( l.hit ) {
                 strokeWeight(1);
-                stroke(255, 100, 100);
+                stroke(255, 100, 100); 
                 fill(255, 100, 100);
                 circle(l.x, l.y, 8);
 
