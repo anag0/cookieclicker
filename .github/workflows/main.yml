@@ -12,11 +12,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v3
+      
       - name: Create dir
         run: |
           mkdir mydirname
           touch mydirname/test.txt
           echo "This is a sample text" > mydirname/test.txt
+          
       - name: GIT commit and push
         env: 
           CI_COMMIT_MESSAGE: Auto commit and push
