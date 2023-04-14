@@ -33,7 +33,7 @@ function setup() {
     canvas = new Canvas();
     bigBrain.spawn(windowWidth/2,windowHeight/2);
 }
-let y = 100;
+
 function draw() {
     clear();
     bigBrain.draw();

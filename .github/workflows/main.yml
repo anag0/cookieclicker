@@ -18,8 +18,9 @@ jobs:
       
       - name: Create dir
         run: |
-          mkdir mydirname
-          touch mydirname/test.txt
-          echo "This is a sample text" > mydirname/test.txt
+          cd src
+          cat *.js > cookiebrain.js
+          cd ..
+          mv src/cookiebrain.js dist/cookiebrain.js
           
       - uses: stefanzweifel/git-auto-commit-action@v4

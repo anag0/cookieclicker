@@ -70,17 +70,16 @@ class BigBrain {
             ++this.misses;
         }
         this.laserSound.play();
-        document.querySelector('#' + id).dispatchEvent(new Event('click'));
-        console.log('Clicked: ', key);
     }
 
     spawn(x, y) {
         this.brainGroup = new Group();
         this.x = x;
         this.y = y;
-        this.brain = new this.brainGroup.Sprite(x, y, 128, 128, 'none');
+        this.brain = new this.brainGroup.Sprite(x, y, 128, 128, 'static');
         this.veins = loadAnimation('images/brain-sprite-x2.png', { frameSize: [128, 128], frames: 10 });
         this.brain.addAni(this.veins, 'images/brain-sprite-x2.png', 10);
+
 
         this.laserSound = loadSound('sounds/laser.mp3');
 
