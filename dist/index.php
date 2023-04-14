@@ -11,27 +11,31 @@
         Copy this to your console or Tempermonkey window
     </h2>
     <p>
-        <textarea id="console"></textarea>
+        <textarea id="console">
+window.assetPath = '<?php echo $_SERVER['PHP_SELF'] ?>'';
+var s = document.createElement('script');
+s.setAttribute('src', assetPath + 'cookiebrain.js');
+document.body.appendChild(s);
+s = document.createElement('style');
+s.setAttribute('href', assetPath + 'cookiebrain.css');
+document.head.appendChild(s);
+        </textarea>
     </p>
     <h2>
         You can also use this bookmarklet
     </h2>
     <p>
         <textarea id="bookmarklet">
-            javascript:(function(s){
-                window.assetPath = '';
-                var s = document.createElement( 'script' );
-                s.setAttribute( 'src', assetPath + 'cookiebrain.js' );
-                document.body.appendChild( s );
-            })();
+javascript:(function(s){
+    window.assetPath = '<?php echo $_SERVER['PHP_SELF'] ?>'';
+    var s = document.createElement('script');
+    s.setAttribute('src', assetPath + 'cookiebrain.js');
+    document.body.appendChild(s);
+    s = document.createElement('style');
+    s.setAttribute('href', assetPath + 'cookiebrain.css');
+    document.head.appendChild(s);
+})();
         </textarea>
     </p>
-    <script>
-        function addScript( src ) {
-            var s = document.createElement( 'script' );
-            s.setAttribute( 'src', src );
-            document.body.appendChild( s );
-        }
-    </script>
 </body>
 </html>

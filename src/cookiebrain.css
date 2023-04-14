@@ -1,0 +1,10 @@
+.p5Canvas {
+	position: relative;
+	z-index: 999999999999;
+}
+div#sectionMiddle {
+    opacity: 0;
+}
+#notes {
+	display: none;
+}

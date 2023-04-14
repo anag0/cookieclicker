@@ -3,6 +3,8 @@
  * Game.UpgradesById[0].getPrice()
  */
 
+window.assetPath =  window.assetPath || '';
+
 let bigBrain = new BigBrain();
 bigBrain.train(Data.MasterMind.training);
 

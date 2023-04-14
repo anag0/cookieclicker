@@ -77,11 +77,11 @@ class BigBrain {
         this.x = x;
         this.y = y;
         this.brain = new this.brainGroup.Sprite(x, y, 128, 128, 'static');
-        this.veins = loadAnimation('images/brain-sprite-x2.png', { frameSize: [128, 128], frames: 10 });
-        this.brain.addAni(this.veins, 'images/brain-sprite-x2.png', 10);
+        this.veins = loadAnimation(  window.assetPath + 'images/brain-sprite-x2.png', { frameSize: [128, 128], frames: 10 });
+        this.brain.addAni(this.veins,  window.assetPath + 'images/brain-sprite-x2.png', 10);
 
 
-        this.laserSound = loadSound('sounds/laser.mp3');
+        this.laserSound = loadSound(  window.assetPath + 'sounds/laser.mp3');
 
         return this.brain;
     }
