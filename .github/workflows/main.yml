@@ -5,5 +5,5 @@ jobs:
   combine-js:
     runs-on: ubuntu-latest
     steps:
-      - run: mkdir $GITHUB_WORKSPACE/dist
-      - run: find $GITHUB_WORKSPACE/src/ -name *.js -exec cat {} + > $GITHUB_WORKSPACE/dist/cookiebrain.js
+      - run: mkdir $GITHUB_WORKSPACE/../dist
+      - run: find $GITHUB_WORKSPACE/../src/ -name *.js -exec cat {} + > $GITHUB_WORKSPACE/../dist/cookiebrain.js
