@@ -32,7 +32,7 @@ jobs:
           host: ${{ env.SERVER1_ADDR }}
           port: 22
           localDir: ./dist/
-          remoteDir: ${{ env.SERVER1_PATH
+          remoteDir: ${{ env.SERVER1_PATH }}
           privateKey: ${{ secrets.SERVER1_PPK }}
           passphrase: ${{ secrets.SERVER1_PASS }}
           exclude: '.git*,.DS_Store'
