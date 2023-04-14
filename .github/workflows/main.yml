@@ -17,5 +17,15 @@ jobs:
           mkdir mydirname
           touch mydirname/test.txt
           echo "This is a sample text" > mydirname/test.txt
-          git commit -m "Automated test"
+          
+  commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          date > generated.txt
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "generated"
           git push
