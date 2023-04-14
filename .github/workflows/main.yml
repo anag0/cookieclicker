@@ -31,7 +31,7 @@ jobs:
         with:
           host: ${{ env.SERVER1_ADDR }}
           port: 22
-          localDir: ./dist/
+          localDir: './dist/'
           remoteDir: ${{ env.SERVER1_PATH }}
           privateKey: ${{ secrets.SERVER1_PPK }}
           passphrase: ${{ secrets.SERVER1_PASS }}
