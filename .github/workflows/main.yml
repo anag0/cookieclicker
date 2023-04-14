@@ -17,3 +17,5 @@ jobs:
           mkdir mydirname
           touch mydirname/test.txt
           echo "This is a sample text" > mydirname/test.txt
+          git commit -m "Automated test"
+          git push
