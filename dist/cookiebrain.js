@@ -55,15 +55,15 @@ class BigBrain {
     }
 
     play() {
-        let prediction = this.net.run(Utils.getCurrentGameState()), key, id;
+        let prediction = this.net.run(Utils.getCurrentGameState()), objectKey;
         if ( this.strictPrediction ) {
-            key = this.getHighestPrediction(prediction);
+            objectKey = this.getHighestPrediction(prediction);
         } else {
-            key = this.getPredictionByWeights(prediction);
+            objectKey = this.getPredictionByWeights(prediction);
         }
-        id = Utils.getNodeIdByObjectName(key);
         this.bestObjectToClick = Utils.getBestObjectToClick();
-        this.recentlyClicked = key;
+        Utils.click(objectKey);
+        this.recentlyClicked = objectKey;
         if ( this.recentlyClicked == this.bestObjectToClick ) {
             ++this.hits;
         } else {
@@ -1073,6 +1073,11 @@ class BigBrain {
         return {x: cx, y: cy};
     },
 
+    click: function(key) {
+        let id = '#' + Utils.getNodeIdByObjectName(key);
+        document.querySelector(id).dispatchEvent(new Event('click'));
+    },
+
     getCurrentGameState: function() {
         let state = {};
         Game.ObjectsById.forEach(function(building, id){
@@ -1107,11 +1112,9 @@ class BigBrain {
         } else {
             let highestTier = -1,
                 $this = this;
-            console.log('states', state)
             Object.keys(state).forEach((key)=>{
                 if ( state[key] == 1 && $this.objects[key].id.indexOf('product') > -1 ) {
                     const tier = parseInt($this.objects[key].id.replace('product', ''));
-                    console.log('tier', tier, highestTier);
                     if ( tier > highestTier ) {
                         highestTier = tier;
                         name = key;
