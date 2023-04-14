@@ -8,4 +8,3 @@ jobs:
       - name: Create dir
         run: |
           mkdir dist
-          find src/ -name *.js -exec cat {} + > dist/cookiebrain.js
