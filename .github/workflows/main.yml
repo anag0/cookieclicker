@@ -29,17 +29,10 @@ jobs:
       - name: SFTP uploader
         uses: wangyucode/sftp-upload-action@v2.0.2
         with:
-          host: env.SERVER1_ADDR
+          host: ${{ env.SERVER1_ADDR }}
           port: 22
-          username: # optional, default is root
-          password: 
-          compress: # optional
           localDir: ./dist/
-          remoteDir: env.SERVER1_PATH
-          dryRun: # optional
-          privateKey: secrets.SERVER1_PPK
-          passphrase: secrets.SERVER1_PASS
-          agent: # optional, default is 
-          exclude: # optional, default is 
-          forceUpload: # optional
-          removeExtraFilesOnServer: # optional
+          remoteDir: ${{ env.SERVER1_PATH
+          privateKey: ${{ secrets.SERVER1_PPK }}
+          passphrase: ${{ secrets.SERVER1_PASS }}
+          exclude: '.git*,.DS_Store'
