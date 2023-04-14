@@ -25,7 +25,7 @@ jobs:
           cp src/cookiebrain.css dist/cookiebrain.css
           
       - uses: stefanzweifel/git-auto-commit-action@v4
-      
+
       - name: SFTP Upload
         # You may pin to the exact commit or the version.
         # uses: Dylan700/sftp-upload-action@f90db607d9fe1acdc0eefccee84d37c119b268fe
@@ -39,4 +39,5 @@ jobs:
           key: ${{ secrets.key }}
           # The passphrase for your private key.
           passphrase: ${{ secrets.pass }}
-          uploads: `dist/ => ${{ env.path }}`
+          uploads: |
+            ./dist/ => ${{ env.path }}
