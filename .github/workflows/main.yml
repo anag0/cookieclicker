@@ -25,15 +25,18 @@ jobs:
           cp src/cookiebrain.css dist/cookiebrain.css
           
       - uses: stefanzweifel/git-auto-commit-action@v4
-
-      - name: SFTP uploader
-        uses: wangyucode/sftp-upload-action@v2.0.2
+      
+      - name: SFTP Upload
+        # You may pin to the exact commit or the version.
+        # uses: Dylan700/sftp-upload-action@f90db607d9fe1acdc0eefccee84d37c119b268fe
+        uses: Dylan700/sftp-upload-action@v1.1.4
         with:
-          host: ${{ env.address }}
-          password: ${{ secrets.pass }}
-          port: 22
-          localDir: './dist/'
-          remoteDir: ${{ env.path }}
-          privateKey: ${{ secrets.key }}
+          # The SFTP server (e.g. sftp.server.com).
+          server: ${{ env.address }}
+          # The SFTP username.
+          username: root
+          # The private key.
+          key: ${{ secrets.key }}
+          # The passphrase for your private key.
           passphrase: ${{ secrets.pass }}
-          exclude: '.git*,.DS_Store'
+          uploads: `dist/ => ${{ env.path }}`
