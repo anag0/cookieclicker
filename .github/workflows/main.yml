@@ -15,3 +15,5 @@ jobs:
       - name: Create dir
         run: |
           mkdir mydirname
+          touch mydirname/test.txt
+          echo "This is a sample text" > mydirname/test.txt
