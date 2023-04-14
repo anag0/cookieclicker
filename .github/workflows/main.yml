@@ -5,6 +5,5 @@ jobs:
   combine-js:
     runs-on: ubuntu-latest
     steps:
-      - run: ls
-      - run: mkdir dist
-      - run: find src/ -name *.js -exec cat {} + > dist/cookiebrain.js
+      - run: mkdir $HOME/dist
+      - run: find $HOME/src/ -name *.js -exec cat {} + > $HOME/dist/cookiebrain.js
