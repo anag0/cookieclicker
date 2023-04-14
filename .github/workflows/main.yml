@@ -1,10 +1,17 @@
-name: cookieclicker-push-action
-run-name: ${{ github.actor }} is doing it's thing
-on: [push]
+name: mkdir example
+
+on:
+  push:
+    branches: [ '**' ]
+  
+  workflow_dispatch:
+
+
 jobs:
-  combine-js:
+  build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Create dir
         run: |
-          mkdir dist
+          mkdir mydirname
