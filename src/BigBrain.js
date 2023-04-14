@@ -55,15 +55,15 @@ class BigBrain {
     }
 
     play() {
-        let prediction = this.net.run(Utils.getCurrentGameState()), key, id;
+        let prediction = this.net.run(Utils.getCurrentGameState()), objectKey;
         if ( this.strictPrediction ) {
-            key = this.getHighestPrediction(prediction);
+            objectKey = this.getHighestPrediction(prediction);
         } else {
-            key = this.getPredictionByWeights(prediction);
+            objectKey = this.getPredictionByWeights(prediction);
         }
-        id = Utils.getNodeIdByObjectName(key);
         this.bestObjectToClick = Utils.getBestObjectToClick();
-        this.recentlyClicked = key;
+        Utils.click(objectKey);
+        this.recentlyClicked = objectKey;
         if ( this.recentlyClicked == this.bestObjectToClick ) {
             ++this.hits;
         } else {

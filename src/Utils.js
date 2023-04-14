@@ -81,6 +81,11 @@ let Utils = {
         return {x: cx, y: cy};
     },
 
+    click: function(key) {
+        let id = '#' + Utils.getNodeIdByObjectName(key);
+        document.querySelector(id).dispatchEvent(new Event('click'));
+    },
+
     getCurrentGameState: function() {
         let state = {};
         Game.ObjectsById.forEach(function(building, id){
@@ -115,11 +120,9 @@ let Utils = {
         } else {
             let highestTier = -1,
                 $this = this;
-            console.log('states', state)
             Object.keys(state).forEach((key)=>{
                 if ( state[key] == 1 && $this.objects[key].id.indexOf('product') > -1 ) {
                     const tier = parseInt($this.objects[key].id.replace('product', ''));
-                    console.log('tier', tier, highestTier);
                     if ( tier > highestTier ) {
                         highestTier = tier;
                         name = key;
