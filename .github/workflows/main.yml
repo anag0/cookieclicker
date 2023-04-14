@@ -30,6 +30,7 @@ jobs:
         uses: wangyucode/sftp-upload-action@v2.0.2
         with:
           host: ${{ env.address }}
+          password: ${{ secrets.pass }}
           port: 22
           localDir: './dist/'
           remoteDir: ${{ env.path }}
