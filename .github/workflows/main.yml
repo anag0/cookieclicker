@@ -32,12 +32,10 @@ jobs:
         uses: Dylan700/sftp-upload-action@v1.1.4
         with:
           # The SFTP server (e.g. sftp.server.com).
-          server: ${{ env.address }}
+          server: ${{ secrets.address }}
           # The SFTP username.
-          username: root
+          username: ${{ secrets.user }}
           # The private key.
           key: ${{ secrets.key }}
-          # The passphrase for your private key.
-          passphrase: ${{ secrets.pass }}
           uploads: |
-            ./dist/ => ${{ env.path }}
+            ./dist/ => ${{ secrets.path }}
