@@ -23,8 +23,8 @@ jobs:
           cd ..
           mv src/cookiebrain.js dist/cookiebrain.js
           cp src/cookiebrain.css dist/cookiebrain.css
-          cp images dist/images
-          cp sounds dist/sounds
+          cp -r images dist/images
+          cp -r sounds dist/sounds
           
       - uses: stefanzweifel/git-auto-commit-action@v4
 
