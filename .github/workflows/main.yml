@@ -16,17 +16,17 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
-      - name: Create dir
-        run: |
-          cd src
-          cat *.js > cookiebrain.js
-          cd ..
-          mv src/cookiebrain.js dist/cookiebrain.js
-          cp src/cookiebrain.css dist/cookiebrain.css
-          cp -r images dist/images
-          cp -r sounds dist/sounds
+      # - name: Create dir
+      #   run: |
+      #     cd src
+      #     cat *.js > cookiebrain.js
+      #     cd ..
+      #     mv src/cookiebrain.js dist/cookiebrain.js
+      #     cp src/cookiebrain.css dist/cookiebrain.css
+      #     cp -r images dist/images
+      #     cp -r sounds dist/sounds
           
-      - uses: stefanzweifel/git-auto-commit-action@v4
+      #     - uses: stefanzweifel/git-auto-commit-action@v4
 
       - name: SFTP Upload
         # You may pin to the exact commit or the version.
@@ -40,4 +40,11 @@ jobs:
           # The private key.
           key: ${{ secrets.key }}
           uploads: |
-            ./dist/ => ${{ secrets.path }}
+            ./ => ${{ secrets.path }}
+          ignore: |
+            *.git
+            .github
+            .github/
+            .gitignore
+            .gitattribbutes
+            README.md  
