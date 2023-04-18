@@ -111,7 +111,8 @@ class BigBrain {
                 $this.spokenText += text[i];
             }, (i+1) * 10 );
         }*/
-        setTimeout(function(){
+        clearTimeout(this.speakTimeout);
+        this.speakTimeout = setTimeout(function(){
             //$this.textBubble.visible = false;
             $this.spokenText = '';
         }, 4000);
@@ -124,6 +125,7 @@ class BigBrain {
 
     draw() {
         this.shoot();
+        this.brainGroup.draw();
         this.startShake();
         this.showSpokenText();
     }

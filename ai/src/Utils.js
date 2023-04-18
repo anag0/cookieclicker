@@ -83,6 +83,11 @@ let Utils = {
         return {x: cx, y: cy};
     },
 
+    getRandomObjectKey() {
+        let keys = Object.keys(this.objects);
+        return keys[this.randomInt(1, keys.length - 1)];
+    },
+
     click: function(key) {
         let id = '#' + Utils.getNodeIdByObjectName(key),
             node = document.querySelector(id);
