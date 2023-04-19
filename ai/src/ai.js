@@ -10,7 +10,7 @@ bigBrain.train(Data.MasterMind.training);
 
 let smallBrain = new SmallBrain();
 
-let n;
+let n, m;
 function go(timer = 200) {
     n = setInterval(function(){
         Utils.initCoordinates();
@@ -20,7 +20,7 @@ function go(timer = 200) {
 
 
 function goSmallBrain(timer = 200) {
-    n = setInterval(function(){
+    m = setInterval(function(){
         Utils.initCoordinates();
         smallBrain.play();
     }, timer);
@@ -33,6 +33,7 @@ function playOnce() {
 
 function stop() {
     clearInterval(n);
+    clearInterval(m);
 }
 
 let canvas;

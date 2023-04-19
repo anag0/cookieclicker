@@ -22,24 +22,46 @@ class SmallBrain {
 
     async shoot(key) {
         const coordinates = Utils.getObjectRandomCoordinatesByName(key);
-        let bullet = new Sprite(this.x, this.y, 10);
+        let bullet = new Sprite(this.x, this.y, 10, 'kinematic'),
+            hit = Utils.getBestObjectToClick() == key;
+        bullet.color = 'red';
         this.bullets.push( bullet );
-        if ( Utils.getBestObjectToClick() == key ) {
+        this.shot.play();
+
+        if ( hit ) {
             this.hits++;
         } else {
             this.misses++;
         }
 
         this.shake = true;
-    
         await bullet.moveTo(coordinates, 35);
+        this.bulletHole(coordinates);
+        if ( !hit ) {
+            this.ricochet.play();
+        }
         bullet.remove();
         this.bullets.shift();
         this.shake = false;
-        console.log(this.bullets);
+    }
+
+    bulletHole(coordinates) {
+        let hole = new Sprite(coordinates.x, coordinates.y, 12, 'kinematic');
+        hole.d = 14;
+        hole.color = 'rgba(0,0,0,1)';
+        setTimeout(function(){
+            hole.color = 'rgba(0,0,0,0.5)';
+        }, 500);
+        setTimeout(function(){
+            hole.color = 'rgba(0,0,0,0.2)';
+        }, 750);
+        setTimeout(function(){
+            hole.remove();
+        }, 1000);
     }
 
     draw() {
+        strokeWeight(0);
         this.bullets.forEach((bullet)=>{
             bullet.draw();
         });
@@ -53,7 +75,8 @@ class SmallBrain {
         this.brain = new Sprite(0, 0, 64, 64, 'none');
         this.veins = loadAnimation(  window.assetPath + 'images/small-brain-sprite-x2.png', { frameSize: [64, 64], frames: 10 });
         this.brain.addAni(this.veins,  window.assetPath + 'images/brain-sprite-x2.png', 10);
-        //this.laserSoundHit = loadSound(  window.assetPath + 'sounds/laser-big.mp3');
+        this.shot = loadSound(  window.assetPath + 'sounds/shot.mp3');
+        this.ricochet = loadSound(  window.assetPath + 'sounds/ricochet.mp3');
         //this.laserSoundMiss = loadSound(  window.assetPath + 'sounds/laser-big-miss.mp3');
         //this.textBubble = new this.brainGroup.Sprite(0, 0, 198, 120, 'none');
         //this.textBubble.img = window.assetPath + 'images/brain-bubble.png';
