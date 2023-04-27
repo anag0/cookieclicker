@@ -20,6 +20,16 @@ class SmallBrain {
         this.shoot(key);
     }
 
+    fitness() {
+        return this.hits / (this.hits + this.misses);
+    }
+
+    crossover( partner ) {
+        return new SmallBrain(
+            (partner.cookieClickChance + this.cookieClickChance) / 2
+        );
+    }
+
     async shoot(key) {
         const coordinates = Utils.getObjectRandomCoordinatesByName(key);
         let bullet = new Sprite(this.x, this.y, 10, 'kinematic'),
@@ -86,6 +96,11 @@ class SmallBrain {
         this.brain.y = y;
 
         return this.brain;
+    }
+
+    die() {
+        this.brain.remove();
+        this.veins.remove();
     }
 
     async startShake() {

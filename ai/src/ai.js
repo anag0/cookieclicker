@@ -10,6 +10,8 @@ bigBrain.train(Data.MasterMind.training);
 
 let smallBrain = new SmallBrain();
 
+let bp = new Population(100, 0.05, 0.95);
+
 let n, m;
 function go(timer = 200) {
     n = setInterval(function(){
@@ -45,13 +47,15 @@ function preLoad() {
 function setup() {
     canvas = new Canvas();
     bigBrain.spawn(windowWidth/2,windowHeight/2);
-    smallBrain.spawn(windowWidth/2 - 50,windowHeight/2 + 40)
+    smallBrain.spawn(windowWidth/2 - 50,windowHeight/2 + 40);
+    bp.spawn();
 }
 
 function draw() {
     clear();
     bigBrain.draw();
     smallBrain.draw();
+    bp.draw();
 }
 
 function windowResized() {
