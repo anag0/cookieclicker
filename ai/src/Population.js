@@ -16,11 +16,14 @@ class Population {
         });  
     }
 
-    play( interval = 200 ) {
+    play( interval = 500 ) {
         let _this = this;
         this.interval = setInterval(function(){
-            _this.smallBrains.forEach(function(smallBrain){
-                smallBrain.play();
+            Utils.initCoordinates(true);
+            _this.smallBrains.forEach(function(smallBrain, i){
+                setTimeout(()=>{
+                    smallBrain.play();     
+                }, i*4);
             });
         }, interval);
     }
@@ -62,7 +65,7 @@ class Population {
     }
 
     getNewBrainCoordinates() {
-        let topY = 50,
+        const topY = 50,
             bottomY = windowHeight-50,
             leftX = windowWidth / 3,
             rightX = leftX * 2;

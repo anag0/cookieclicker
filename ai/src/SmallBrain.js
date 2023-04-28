@@ -36,7 +36,7 @@ class SmallBrain {
             hit = Utils.getBestObjectToClick() == key;
         bullet.color = 'red';
         this.bullets.push( bullet );
-        this.shot.play();
+        SmallBrain.shot.play();
 
         if ( hit ) {
             this.hits++;
@@ -48,7 +48,7 @@ class SmallBrain {
         await bullet.moveTo(coordinates, 35);
         this.bulletHole(coordinates);
         if ( !hit ) {
-            this.ricochet.play();
+            SmallBrain.ricochet.play();
         }
         bullet.remove();
         this.bullets.shift();
@@ -79,14 +79,19 @@ class SmallBrain {
         this.startShake();
     }
 
+    static preload() {
+        SmallBrain.shot = loadSound(  window.assetPath + 'sounds/shot.mp3');
+        SmallBrain.ricochet = loadSound(  window.assetPath + 'sounds/ricochet.mp3');
+    }
+
     spawn(x, y) {
         this.x = x;
         this.y = y;
         this.brain = new Sprite(0, 0, 64, 64, 'none');
-        this.veins = loadAnimation(  window.assetPath + 'images/small-brain-sprite-x2.png', { frameSize: [64, 64], frames: 10 });
-        this.brain.addAni(this.veins,  window.assetPath + 'images/brain-sprite-x2.png', 10);
-        this.shot = loadSound(  window.assetPath + 'sounds/shot.mp3');
-        this.ricochet = loadSound(  window.assetPath + 'sounds/ricochet.mp3');
+        this.brain.layer = 1;
+        //let ani = { ...SmallBrain.beat };
+        let ani = loadAnimation(  window.assetPath + 'images/small-brain-sprite-x2.png', { frameSize: [64, 64], frames: 10 });
+        this.brain.addAni(ani,  window.assetPath + 'images/brain-sprite-x2.png', 10);
         //this.laserSoundMiss = loadSound(  window.assetPath + 'sounds/laser-big-miss.mp3');
         //this.textBubble = new this.brainGroup.Sprite(0, 0, 198, 120, 'none');
         //this.textBubble.img = window.assetPath + 'images/brain-bubble.png';
@@ -100,7 +105,6 @@ class SmallBrain {
 
     die() {
         this.brain.remove();
-        this.veins.remove();
     }
 
     async startShake() {
