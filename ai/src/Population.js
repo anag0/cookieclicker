@@ -3,7 +3,7 @@ class Population {
     constructor(size, startingPoint = 0.05, endPoint = 0.95) {
         let step = (endPoint - startingPoint) / size;
         for(let i=0; i<size; ++i) {
-            this.smallBrains.push(new SmallBrain(startingPoint + i * step));
+            this.smallBrains.push(new SmallBrain(startingPoint + i * step, true));
         }
     }
 
@@ -16,14 +16,15 @@ class Population {
         });  
     }
 
-    play( interval = 500 ) {
+    play( interval = 200 ) {
         let _this = this;
         this.interval = setInterval(function(){
             Utils.initCoordinates(true);
             _this.smallBrains.forEach(function(smallBrain, i){
-                setTimeout(()=>{
-                    smallBrain.play();     
-                }, i*4);
+                _this.smallBrains[i].play();  
+                /*setTimeout(()=>{
+                    _this.smallBrains[i].play();     
+                }, i*40);*/
             });
         }, interval);
     }
@@ -36,23 +37,65 @@ class Population {
         this.smallBrains.forEach(function(smallBrain){
             smallBrain.draw();
         });
+        this.drawStats();
+    }
+
+    drawStats() {
+        fill('rgba(0, 0, 0, 0.7)');
+        rect(0, 0, 360, windowHeight);
+
+        textAlign(LEFT);
+        fill(255, 255, 255);
+        textSize(24);
+        text( 'Small Brain Stats', 40 , windowHeight - 630, 280, 24 );
+        textSize(12);
+        text( 'Number    Hits      Misses      S      Fitness', 40 , windowHeight - 600, 280, 14 );
+        textSize(10);
+
+        this.smallBrains.forEach(function(smallBrain, i){
+            if ( smallBrain.generation > 0 ) {
+                fill(255, 255, 0);
+            } else {
+                fill(255, 255, 255);
+            }
+            let offsetY = windowHeight - 590 + (i*10);
+            text( '#'+ (i+1), 40 , offsetY, 280, 14 );
+            text( smallBrain.hits + '(' + smallBrain.objectHits + ')', 96 , offsetY, 280, 14 );
+            text( smallBrain.misses + '(' + smallBrain.objectMisses + ')', 136 , offsetY, 280, 14 );
+            text( smallBrain.generation, 194 , offsetY, 280, 14 );
+            text( smallBrain.fitness().toFixed(3), 246 , offsetY, 280, 14 );
+        });
     }
 
     reproduce() {
         let bestBrain = 0,
-            bestFitness = 0;
+            bestFitness = 0,
+            averageFittness = 0,
+            survivors = [];
 
-        this.smallBrains.forEach(function(smallBrain, i){
+        // Get the best and calculate avarege    
+        this.smallBrains.forEach(function(smallBrain, n){
+            averageFittness += smallBrain.fitness(); 
             if ( smallBrain.fitness() > bestFitness ) {
                 bestFitness = smallBrain.fitness();
-                bestBrain = i;
+                bestBrain = n;
+            }
+        });
+        averageFittness = averageFittness / this.smallBrains.length;
+
+        // Get the survivors
+        this.smallBrains.forEach(function(smallBrain, n){
+            if ( smallBrain.fitness() > averageFittness ) {
+                survivors.push(n);
             }
         });
 
+        //console.log('best brain', bestBrain);
+
         for ( let i=0; i<this.smallBrains.length; i++ ) {
-            if ( i != bestBrain ) {
+            if ( i != bestBrain && survivors.indexOf(i) == -1 ) {
                 let randomBrain = Utils.randomInt(0, this.smallBrains.length-1);
-                while ( randomBrain == bestBrain || randomBrain == i ) {
+                while ( randomBrain == i ) {
                     randomBrain = Utils.randomInt(0, this.smallBrains.length-1);
                 }
                 let child = this.smallBrains[i].crossover(this.smallBrains[randomBrain]);
@@ -60,6 +103,8 @@ class Population {
                 child.spawn(x, y);
                 this.smallBrains[i].die();
                 this.smallBrains[i] = child;
+            } else {
+                ++this.smallBrains[i].generation;
             }
         }
     }

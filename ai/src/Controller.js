@@ -43,7 +43,17 @@ class Controller {
 
     doSimulation() {
         let _this = this;
-        this.population = new Population(100, 0.05, 0.99);
+
+        this.bigBrain = new BigBrain(false, true);
+        this.bigBrain.train(Data.MasterMind.training);
+        this.bigBrain.spawn(windowWidth/2,windowHeight/2);
+        
+        this.n = setInterval(function(){
+            Utils.initCoordinates();
+            _this.bigBrain.play();
+        }, 200);
+
+        this.population = new Population(50, 0.05, 0.99);
         const generations = 10;
 
         this.population.spawn();
@@ -52,13 +62,12 @@ class Controller {
         for (let generation=1; generation<=generations; ++generation) {
             setTimeout(()=>{
                 _this.population.stop();
-                _this.population.reproduce();
+                console.log('generation:', generation);
                 setTimeout(()=>{
-                    this.pn = setInterval(function(){
-                        _this.population.play();
-                    }, 200);
-                }, 1000);
-            }, 5000 * generation);
+                    _this.population.reproduce();
+                    _this.population.play();
+                }, 4000);
+            }, 30000 * generation);
         }
     }
 
@@ -68,6 +77,7 @@ class Controller {
     }
 
     drawSimulation() {
+        this.bigBrain.draw();
         this.population.draw();
     }
 }

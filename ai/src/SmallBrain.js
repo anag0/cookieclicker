@@ -1,11 +1,16 @@
 class SmallBrain {
     hits = 0;
     misses = 0;
+    objectHits = 0;
+    objectMisses = 0;
     bullets = [];
     shake = false;
+    animationKey = 0;
+    generation = 0;
 
-    constructor( cookieClickChance = 0.5 ) {
+    constructor( cookieClickChance = 0.5, training = false ) {
         this.cookieClickChance = cookieClickChance;
+        this.training = training;
     }
 
     play() {
@@ -16,17 +21,24 @@ class SmallBrain {
         } else {
             key = Utils.getRandomObjectKey();
         }
-        Utils.click(key);
+        if ( !this.training ) {
+            Utils.click(key);
+        }
         this.shoot(key);
     }
 
     fitness() {
-        return this.hits / (this.hits + this.misses);
+        if ( (this.hits + this.misses + this.objectHits*1000 + this.objectMisses*1000) > 0 ) {
+            return (this.hits + (this.objectHits*1000) ) / (this.hits + this.misses + this.objectHits*1000 + this.objectMisses*1000);
+        } else {
+            return 0;
+        }
     }
 
     crossover( partner ) {
         return new SmallBrain(
-            (partner.cookieClickChance + this.cookieClickChance) / 2
+            (partner.cookieClickChance + this.cookieClickChance) / 2,
+            this.training
         );
     }
 
@@ -36,18 +48,29 @@ class SmallBrain {
             hit = Utils.getBestObjectToClick() == key;
         bullet.color = 'red';
         this.bullets.push( bullet );
-        SmallBrain.shot.play();
+
+        if ( !this.training ) {
+            SmallBrain.shot.play();
+        }
 
         if ( hit ) {
-            this.hits++;
+            if ( key != 'cookie' ) {
+                this.objectHits++;
+            } else {
+                this.hits++;
+            }
         } else {
-            this.misses++;
+            if ( key == 'cookie' ) {
+                this.objectMisses++;
+            } else {
+                this.misses++;
+            }
         }
 
         this.shake = true;
         await bullet.moveTo(coordinates, 35);
         this.bulletHole(coordinates);
-        if ( !hit ) {
+        if ( !hit && !this.training ) {
             SmallBrain.ricochet.play();
         }
         bullet.remove();
@@ -82,6 +105,16 @@ class SmallBrain {
     static preload() {
         SmallBrain.shot = loadSound(  window.assetPath + 'sounds/shot.mp3');
         SmallBrain.ricochet = loadSound(  window.assetPath + 'sounds/ricochet.mp3');
+
+        SmallBrain.ani = [];
+        for (var i=0; i<100; ++i) {
+            let ani = loadAnimation(  window.assetPath + 'images/small-brain-sprite-x2.png', { frameSize: [64, 64], frames: 10 });
+            SmallBrain.ani.push({
+                'ani': ani,
+                'inUse': false
+            });
+        }
+        //SmallBrain.ani = loadAnimation(  window.assetPath + 'images/small-brain-sprite-x2.png', { frameSize: [64, 64], frames: 10 });
     }
 
     spawn(x, y) {
@@ -90,8 +123,17 @@ class SmallBrain {
         this.brain = new Sprite(0, 0, 64, 64, 'none');
         this.brain.layer = 1;
         //let ani = { ...SmallBrain.beat };
-        let ani = loadAnimation(  window.assetPath + 'images/small-brain-sprite-x2.png', { frameSize: [64, 64], frames: 10 });
-        this.brain.addAni(ani,  window.assetPath + 'images/brain-sprite-x2.png', 10);
+        //let ani = loadAnimation(  window.assetPath + 'images/small-brain-sprite-x2.png', { frameSize: [64, 64], frames: 10 });
+        for (var i=0; i<100; ++i) {
+            if ( !SmallBrain.ani[i].inUse ) {
+                this.brain.addAni(SmallBrain.ani[i].ani);
+                SmallBrain.ani[i].ani.frame = Utils.randomInt(1, 9);
+                SmallBrain.ani[i].inUse = true;
+                this.animationKey = i;
+                break;
+            }
+        }
+        //this.brain.addAni(SmallBrain.ani);
         //this.laserSoundMiss = loadSound(  window.assetPath + 'sounds/laser-big-miss.mp3');
         //this.textBubble = new this.brainGroup.Sprite(0, 0, 198, 120, 'none');
         //this.textBubble.img = window.assetPath + 'images/brain-bubble.png';
@@ -104,6 +146,7 @@ class SmallBrain {
     }
 
     die() {
+        SmallBrain.ani[this.animationKey].inUse = false;
         this.brain.remove();
     }
 

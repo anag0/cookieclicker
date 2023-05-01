@@ -7,9 +7,10 @@ class BigBrain {
     lines = [];
     spokenText = '';
 
-    constructor( strictPrediction = false ) {
+    constructor( strictPrediction = false, training = false ) {
         this.strictPrediction = strictPrediction;
         this.net = new brain.NeuralNetwork();
+        this.training = training;
     }
 
     train(data = false) {
@@ -67,10 +68,14 @@ class BigBrain {
         this.recentlyClicked = objectKey;
         if ( this.recentlyClicked == this.bestObjectToClick ) {
             ++this.hits;
-            BigBrain.laserSoundHit.play();
+            if ( !this.training ) {
+                BigBrain.laserSoundHit.play();
+            }
         } else {
             ++this.misses;
-            BigBrain.laserSoundMiss.play();
+            if ( !this.training ) {
+                BigBrain.laserSoundMiss.play();
+            }
         }
     }
 
