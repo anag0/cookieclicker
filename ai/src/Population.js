@@ -1,5 +1,7 @@
 class Population {
     smallBrains = [];
+    generation = 1;
+
     constructor(size, startingPoint = 0.05, endPoint = 0.95) {
         let step = (endPoint - startingPoint) / size;
         for(let i=0; i<size; ++i) {
@@ -17,20 +19,22 @@ class Population {
     }
 
     play( interval = 200 ) {
-        let _this = this;
-        this.interval = setInterval(function(){
-            Utils.initCoordinates(true);
-            _this.smallBrains.forEach(function(smallBrain, i){
-                _this.smallBrains[i].play();  
-                /*setTimeout(()=>{
-                    _this.smallBrains[i].play();     
-                }, i*40);*/
-            });
-        }, interval);
+        this.smallBrains.forEach(function(smallBrain){
+            smallBrain.play(interval);  
+        });
     }
 
     stop() {
-        clearInterval(this.interval);
+        this.smallBrains.forEach(function(smallBrain){
+            smallBrain.stop();  
+        });
+    }
+
+    die() {
+        this.stop();
+        this.smallBrains.forEach(function(smallBrain, i){
+            smallBrain.die();
+        });
     }
 
     draw() {
@@ -41,15 +45,18 @@ class Population {
     }
 
     drawStats() {
+        let _this = this;
+
         fill('rgba(0, 0, 0, 0.7)');
         rect(0, 0, 360, windowHeight);
 
         textAlign(LEFT);
         fill(255, 255, 255);
         textSize(24);
-        text( 'Small Brain Stats', 40 , windowHeight - 630, 280, 24 );
+        text( 'Generation: ' + this.generation, 40 , windowHeight - 660, 320, 24 );
+        text( 'Population Stats', 40 , windowHeight - 630, 320, 24 );
         textSize(12);
-        text( 'Number    Hits      Misses      S      Fitness', 40 , windowHeight - 600, 280, 14 );
+        text( 'Number    Hits      Misses      S      Fitness    Parameter', 40 , windowHeight - 600, 320, 14 );
         textSize(10);
 
         this.smallBrains.forEach(function(smallBrain, i){
@@ -58,12 +65,18 @@ class Population {
             } else {
                 fill(255, 255, 255);
             }
+
+            if ( i == _this.getFittest() ) {
+                fill(255, 0, 0);
+            }
+
             let offsetY = windowHeight - 590 + (i*10);
             text( '#'+ (i+1), 40 , offsetY, 280, 14 );
             text( smallBrain.hits + '(' + smallBrain.objectHits + ')', 96 , offsetY, 280, 14 );
             text( smallBrain.misses + '(' + smallBrain.objectMisses + ')', 136 , offsetY, 280, 14 );
             text( smallBrain.generation, 194 , offsetY, 280, 14 );
-            text( smallBrain.fitness().toFixed(3), 246 , offsetY, 280, 14 );
+            text( smallBrain.fitness().toFixed(3), 222 , offsetY, 280, 14 );
+            text( smallBrain.cookieClickChance.toFixed(3), 274 , offsetY, 280, 14 );
         });
     }
 
@@ -107,6 +120,51 @@ class Population {
                 ++this.smallBrains[i].generation;
             }
         }
+
+        this.generation++;
+    }
+
+    getTheChosenOne() {
+        let bestFitness = 0, bestBrain;
+
+        this.smallBrains.forEach(function(smallBrain, n){
+            if ( smallBrain.fitness() > bestFitness ) {
+                bestFitness = smallBrain.fitness();
+                bestBrain = smallBrain;
+            }
+        });
+
+        return bestBrain;
+    }
+
+    getFittest() {
+        let bestFitness = 0, bestBrain = 0;
+
+        this.smallBrains.forEach(function(smallBrain, n){
+            if ( smallBrain.fitness() > bestFitness ) {
+                bestFitness = smallBrain.fitness();
+                bestBrain = n;
+            }
+        });
+
+        return bestBrain;
+    }
+
+    removeTheDoomedOnes( bigBrain ) {
+        let _this = this;
+        this.smallBrains.forEach(function(smallBrain, i){
+            setTimeout(function(){
+                if ( _this.smallBrains.length > 1 ) {
+                    let n = 0;
+                    while ( n == _this.getFittest() ) {
+                        n++;
+                    }
+                    bigBrain.shootAt(smallBrain.x, smallBrain.y);
+                    _this.smallBrains[n].die();     
+                    _this.smallBrains.splice(n, 1);
+                }
+            }, 400 * i);
+        });
     }
 
     getNewBrainCoordinates() {
@@ -116,21 +174,17 @@ class Population {
             rightX = leftX * 2;
         let x = Utils.randomInt(leftX, rightX),
             y = Utils.randomInt(topY, bottomY); 
-        /*while(this.isBrainClose(x, y)) {
+        while(this.isCloseToCenter(x, y)) {
             x = Utils.randomInt(leftX, rightX);
             y = Utils.randomInt(topY, bottomY); 
-        }  */
+        }
 
         return {'x': x, 'y': y};
     }
 
-    isBrainClose(x, y) {
-        let close = false;
-        this.smallBrains.forEach( function(smallBrain){
-            if ( Math.abs(smallBrain.x - x) < 20 || Math.abs(smallBrain.y - y) < 20 ) {
-                close = true;
-            }
-        });
-        return close;
+    isCloseToCenter(x, y) {
+        let a = x - windowWidth / 2,
+            b = y - windowHeight / 2;
+        return Math.sqrt( a*a + b*b ) < 250;
     }
 }

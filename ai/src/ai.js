@@ -73,7 +73,7 @@ function preload() {
 
 function setup() {
     canvas = new Canvas();
-    //controller.setup();
+    controller.setup();
 }
 
 function draw() {

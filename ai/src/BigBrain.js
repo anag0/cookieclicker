@@ -6,11 +6,12 @@ class BigBrain {
     shake = false;
     lines = [];
     spokenText = '';
+    playInterval;
 
-    constructor( strictPrediction = false, training = false ) {
+    constructor( strictPrediction = false, sound = true ) {
         this.strictPrediction = strictPrediction;
         this.net = new brain.NeuralNetwork();
-        this.training = training;
+        this.sound = sound;
     }
 
     train(data = false) {
@@ -56,7 +57,7 @@ class BigBrain {
         return key;
     }
 
-    play() {
+    playOnce() {
         let prediction = this.net.run(Utils.getCurrentGameState()), objectKey;
         if ( this.strictPrediction ) {
             objectKey = this.getHighestPrediction(prediction);
@@ -68,15 +69,27 @@ class BigBrain {
         this.recentlyClicked = objectKey;
         if ( this.recentlyClicked == this.bestObjectToClick ) {
             ++this.hits;
-            if ( !this.training ) {
+            if ( this.sound ) {
                 BigBrain.laserSoundHit.play();
             }
         } else {
             ++this.misses;
-            if ( !this.training ) {
+            if ( this.sound ) {
                 BigBrain.laserSoundMiss.play();
             }
         }
+    }
+
+    play( interval = 200 ) {
+        let _this = this;
+        this.playInterval = setInterval(()=>{
+            Utils.initCoordinates();
+            _this.playOnce()
+        }, interval);
+    }
+
+    stop() {
+        clearInterval(this.playInterval);
     }
 
     static preload() {
@@ -93,43 +106,29 @@ class BigBrain {
         this.x = x;
         this.y = y;
         this.brain = new this.brainGroup.Sprite(0, 0, 128, 128, 'none');
-        this.brain.layer = 2;
         this.brain.addAni(BigBrain.veins,  window.assetPath + 'images/brain-sprite-x2.png', 10);
 
 
         this.brainGroup.x = x;
         this.brainGroup.y = y;
-        //BigBrain.textBubble.x = this.x + 120;
-        //BigBrain.textBubble.y = this.y - 80;
-        //BigBrain.textBubble.visible = false;
 
         return this.brain;
     }
 
     die() {
-        this.brain.remove();
+        this.stop();
+        this.shake = false;
+        this.brainGroup.remove();
     }
 
     speak(text = 'Yo wasup') {
         let $this = this;
         this.spokenText = text;
 
-        /*BigBrain.textBubble.visible = true;
-        BigBrain.textBubble.textColor = 'white';
-        BigBrain.textBubble.textSize = 24;
-        BigBrain.textBubble.text = text;*/
-        
-        /*for ( var i=0; i<text.length; i++ ) {
-            setTimeout(function(){
-                console.log(text, i, text[i]);
-                $this.spokenText += text[i];
-            }, (i+1) * 10 );
-        }*/
         clearTimeout(this.speakTimeout);
         this.speakTimeout = setTimeout(function(){
-            //$BigBrain.textBubble.visible = false;
             $this.spokenText = '';
-        }, 4000);
+        }, 5000);
     }
 
     position(x, y) {
@@ -151,8 +150,21 @@ class BigBrain {
             textSize(16);
             textAlign(CENTER, CENTER);
             fill(255, 255, 255);
+            strokeWeight(0);
             text( this.spokenText, this.x + 45 , this.y - 135, 170, 80 );
         }
+    }
+
+    shootAt(x, y) {
+        if ( this.sound ) {
+            BigBrain.laserSoundHit.play();
+        }
+        this.lines.push({
+            "x":x, 
+            "y": y, 
+            "frame": 0, 
+            "hit": true
+        });
     }
 
     shoot() {

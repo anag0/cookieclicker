@@ -4,16 +4,19 @@ class SmallBrain {
     objectHits = 0;
     objectMisses = 0;
     bullets = [];
+    holes = [];
     shake = false;
     animationKey = 0;
     generation = 0;
+    playInterval;
 
     constructor( cookieClickChance = 0.5, training = false ) {
         this.cookieClickChance = cookieClickChance;
         this.training = training;
+        SmallBrain.lastSoundTriggered = 0;
     }
 
-    play() {
+    playOnce() {
         const rand = Math.random();
         let key;
         if ( rand < this.cookieClickChance ) {
@@ -25,6 +28,18 @@ class SmallBrain {
             Utils.click(key);
         }
         this.shoot(key);
+    }
+
+    play( interval = 200 ) {
+        let _this = this;
+        this.playInterval = setInterval(()=>{
+            Utils.initCoordinates();
+            _this.playOnce()
+        }, interval);
+    }
+
+    stop() {
+        clearInterval(this.playInterval);
     }
 
     fitness() {
@@ -49,8 +64,9 @@ class SmallBrain {
         bullet.color = 'red';
         this.bullets.push( bullet );
 
-        if ( !this.training ) {
+        if ( (Date.now() - SmallBrain.lastSoundTriggered) > 100 ) {
             SmallBrain.shot.play();
+            SmallBrain.lastSoundTriggered = Date.now();
         }
 
         if ( hit ) {
@@ -70,8 +86,9 @@ class SmallBrain {
         this.shake = true;
         await bullet.moveTo(coordinates, 35);
         this.bulletHole(coordinates);
-        if ( !hit && !this.training ) {
+        if ( !hit && (Date.now() - SmallBrain.lastSoundTriggered) > 200 ) {
             SmallBrain.ricochet.play();
+            SmallBrain.lastSoundTriggered = Date.now();
         }
         bullet.remove();
         this.bullets.shift();
@@ -80,6 +97,8 @@ class SmallBrain {
 
     bulletHole(coordinates) {
         let hole = new Sprite(coordinates.x, coordinates.y, 12, 'kinematic');
+        let _this = this;
+        this.holes.push( hole );
         hole.d = 14;
         hole.color = 'rgba(0,0,0,1)';
         setTimeout(function(){
@@ -90,6 +109,7 @@ class SmallBrain {
         }, 750);
         setTimeout(function(){
             hole.remove();
+            _this.holes.shift();
         }, 1000);
     }
 
@@ -97,6 +117,9 @@ class SmallBrain {
         strokeWeight(0);
         this.bullets.forEach((bullet)=>{
             bullet.draw();
+        });
+        this.holes.forEach((hole)=>{
+            hole.draw();
         });
         this.brain.draw();
         this.startShake();
@@ -121,7 +144,6 @@ class SmallBrain {
         this.x = x;
         this.y = y;
         this.brain = new Sprite(0, 0, 64, 64, 'none');
-        this.brain.layer = 1;
         //let ani = { ...SmallBrain.beat };
         //let ani = loadAnimation(  window.assetPath + 'images/small-brain-sprite-x2.png', { frameSize: [64, 64], frames: 10 });
         for (var i=0; i<100; ++i) {
@@ -133,11 +155,6 @@ class SmallBrain {
                 break;
             }
         }
-        //this.brain.addAni(SmallBrain.ani);
-        //this.laserSoundMiss = loadSound(  window.assetPath + 'sounds/laser-big-miss.mp3');
-        //this.textBubble = new this.brainGroup.Sprite(0, 0, 198, 120, 'none');
-        //this.textBubble.img = window.assetPath + 'images/brain-bubble.png';
-
 
         this.brain.x = x;
         this.brain.y = y;
@@ -146,6 +163,7 @@ class SmallBrain {
     }
 
     die() {
+        this.stop();
         SmallBrain.ani[this.animationKey].inUse = false;
         this.brain.remove();
     }
