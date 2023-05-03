@@ -10,9 +10,10 @@ class SmallBrain {
     generation = 0;
     playInterval;
 
-    constructor( cookieClickChance = 0.5, training = false ) {
+    constructor( cookieClickChance = 0.286, training = false, sound = true ) {
         this.cookieClickChance = cookieClickChance;
         this.training = training;
+        this.sound = sound;
         SmallBrain.lastSoundTriggered = 0;
     }
 
@@ -53,7 +54,8 @@ class SmallBrain {
     crossover( partner ) {
         return new SmallBrain(
             (partner.cookieClickChance + this.cookieClickChance) / 2,
-            this.training
+            this.training,
+            this.sound
         );
     }
 
@@ -64,9 +66,11 @@ class SmallBrain {
         bullet.color = 'red';
         this.bullets.push( bullet );
 
-        if ( (Date.now() - SmallBrain.lastSoundTriggered) > 100 ) {
-            SmallBrain.shot.play();
-            SmallBrain.lastSoundTriggered = Date.now();
+        if ( this.sound ) {
+            if ( (Date.now() - SmallBrain.lastSoundTriggered) > 100 ) {
+                SmallBrain.shot.play();
+                SmallBrain.lastSoundTriggered = Date.now();
+            }
         }
 
         if ( hit ) {
@@ -86,9 +90,11 @@ class SmallBrain {
         this.shake = true;
         await bullet.moveTo(coordinates, 35);
         this.bulletHole(coordinates);
-        if ( !hit && (Date.now() - SmallBrain.lastSoundTriggered) > 200 ) {
-            SmallBrain.ricochet.play();
-            SmallBrain.lastSoundTriggered = Date.now();
+        if ( this.sound ) {
+            if ( !hit && (Date.now() - SmallBrain.lastSoundTriggered) > 200 ) {
+                SmallBrain.ricochet.play();
+                SmallBrain.lastSoundTriggered = Date.now();
+            }
         }
         bullet.remove();
         this.bullets.shift();
@@ -144,8 +150,6 @@ class SmallBrain {
         this.x = x;
         this.y = y;
         this.brain = new Sprite(0, 0, 64, 64, 'none');
-        //let ani = { ...SmallBrain.beat };
-        //let ani = loadAnimation(  window.assetPath + 'images/small-brain-sprite-x2.png', { frameSize: [64, 64], frames: 10 });
         for (var i=0; i<100; ++i) {
             if ( !SmallBrain.ani[i].inUse ) {
                 this.brain.addAni(SmallBrain.ani[i].ani);

@@ -5,7 +5,7 @@ class Population {
     constructor(size, startingPoint = 0.05, endPoint = 0.95) {
         let step = (endPoint - startingPoint) / size;
         for(let i=0; i<size; ++i) {
-            this.smallBrains.push(new SmallBrain(startingPoint + i * step, true));
+            this.smallBrains.push(new SmallBrain(startingPoint + i * step, true, false));
         }
     }
 
@@ -40,43 +40,6 @@ class Population {
     draw() {
         this.smallBrains.forEach(function(smallBrain){
             smallBrain.draw();
-        });
-        this.drawStats();
-    }
-
-    drawStats() {
-        let _this = this;
-
-        fill('rgba(0, 0, 0, 0.7)');
-        rect(0, 0, 360, windowHeight);
-
-        textAlign(LEFT);
-        fill(255, 255, 255);
-        textSize(24);
-        text( 'Generation: ' + this.generation, 40 , windowHeight - 660, 320, 24 );
-        text( 'Population Stats', 40 , windowHeight - 630, 320, 24 );
-        textSize(12);
-        text( 'Number    Hits      Misses      S      Fitness    Parameter', 40 , windowHeight - 600, 320, 14 );
-        textSize(10);
-
-        this.smallBrains.forEach(function(smallBrain, i){
-            if ( smallBrain.generation > 0 ) {
-                fill(255, 255, 0);
-            } else {
-                fill(255, 255, 255);
-            }
-
-            if ( i == _this.getFittest() ) {
-                fill(255, 0, 0);
-            }
-
-            let offsetY = windowHeight - 590 + (i*10);
-            text( '#'+ (i+1), 40 , offsetY, 280, 14 );
-            text( smallBrain.hits + '(' + smallBrain.objectHits + ')', 96 , offsetY, 280, 14 );
-            text( smallBrain.misses + '(' + smallBrain.objectMisses + ')', 136 , offsetY, 280, 14 );
-            text( smallBrain.generation, 194 , offsetY, 280, 14 );
-            text( smallBrain.fitness().toFixed(3), 222 , offsetY, 280, 14 );
-            text( smallBrain.cookieClickChance.toFixed(3), 274 , offsetY, 280, 14 );
         });
     }
 
@@ -160,7 +123,10 @@ class Population {
                         n++;
                     }
                     bigBrain.shootAt(smallBrain.x, smallBrain.y);
-                    _this.smallBrains[n].die();     
+                    let s = _this.smallBrains[n];
+                    setTimeout(()=>{
+                        s.die();
+                    }, 500);
                     _this.smallBrains.splice(n, 1);
                 }
             }, 400 * i);

@@ -96,8 +96,6 @@ class BigBrain {
         BigBrain.veins = loadAnimation(  window.assetPath + 'images/brain-sprite-x2.png', { frameSize: [128, 128], frames: 10 });
         BigBrain.laserSoundHit = loadSound(  window.assetPath + 'sounds/laser-big.mp3');
         BigBrain.laserSoundMiss = loadSound(  window.assetPath + 'sounds/laser-big-miss.mp3');
-        //BigBrain.textBubble = new this.brainGroup.Sprite(0, 0, 198, 120, 'none');
-        //BigBrain.textBubble.img = window.assetPath + 'images/brain-bubble.png';
         BigBrain.textBubble = loadImage(window.assetPath + 'images/brain-bubble.png');
     }
 

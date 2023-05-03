@@ -1,6 +1,8 @@
 class Controller {
     screen = 'menu';
     preLoad() {
+        this.stats = new Stats();
+
         BigBrain.preload();
         SmallBrain.preload();
     }
@@ -81,10 +83,10 @@ class Controller {
 
     doMenu() {
         this.gameButton = new Sprite(windowWidth/2, windowHeight/2 - 40, 200, 70, 'static');
-        this.gameButton.text = "Start Playing";
+        this.gameButton.text = "ima play";
 
         this.trainingButton = new Sprite(windowWidth/2, windowHeight/2 + 40, 200, 70, 'static');
-        this.trainingButton.text = "AI Training";
+        this.trainingButton.text = "im a train";
     }
 
     doPlay() {
@@ -100,12 +102,12 @@ class Controller {
     }
 
     doSimulation() {
-        const populationInterval = 5;
-        const generations = 2;
+        const populationInterval = 90;
+        const generations = 20;
 
         let _this = this;
 
-        this.bigBrain = new BigBrain();
+        this.bigBrain = new BigBrain(false, false);
         this.bigBrain.train(Data.MasterMind.training);
         this.bigBrain.spawn(windowWidth/2,windowHeight/2);
 
@@ -149,10 +151,12 @@ class Controller {
     drawPlayers() {
         this.bigBrain.draw();
         this.smallBrain.draw();
+        this.stats.drawGameStats(this.bigBrain, this.smallBrain);
     }
 
     drawSimulation() {
         this.bigBrain.draw();
         this.population.draw();
+        this.stats.drawPopulationStats(this.population);
     }
 }
