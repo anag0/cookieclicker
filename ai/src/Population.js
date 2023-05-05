@@ -13,7 +13,6 @@ class Population {
         let _this = this;
         this.smallBrains.forEach(function(smallBrain){
             let {x, y} = _this.getNewBrainCoordinates();
-            console.log(x, y);
             smallBrain.spawn(x, y);
         });  
     }
@@ -65,8 +64,6 @@ class Population {
                 survivors.push(n);
             }
         });
-
-        //console.log('best brain', bestBrain);
 
         for ( let i=0; i<this.smallBrains.length; i++ ) {
             if ( i != bestBrain && survivors.indexOf(i) == -1 ) {

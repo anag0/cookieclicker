@@ -8,12 +8,6 @@ class Controller {
     }
 
     setup() {
-        //this.screen = 'play';
-        //this.doPlay();
-
-        //this.screen = 'simulation';
-        //this.doSimulation();
-
         this.screen = 'menu';
         this.doMenu();
 
@@ -32,6 +26,8 @@ class Controller {
 
         if ( this.screen == 'menu' && this.gameButton && this.gameButton.mouse.pressing() ) {
             this.doReset();
+            this.backButton.visible = 1;
+            this.redirectButton.visible = 1;
             this.gameButton.visible = 0;
             this.trainingButton.visible = 0;
             this.screen = 'play';
@@ -40,17 +36,28 @@ class Controller {
 
         if ( this.screen == 'menu' && this.trainingButton && this.trainingButton.mouse.pressing() ) {
             this.doReset();
+            this.backButton.visible = 1;
+            this.redirectButton.visible = 1;
             this.gameButton.visible = 0;
             this.trainingButton.visible = 0;
             this.screen = 'simulation';
             this.doSimulation();
         }
 
-        if ( kb.pressing('escape') && this.screen != 'menu' ) {
-            this.doReset();
+        if ( ( kb.pressing('escape') || this.backButton.mouse.pressed() ) && this.screen != 'menu' ) {
+            this.doReset(); 
+            this.backButton.visible = 0;
+            this.redirectButton.visible = 0;
             this.gameButton.visible = 1;
             this.trainingButton.visible = 1;
             this.screen = 'menu';
+        }
+
+        if ( this.redirectButton && this.redirectButton.mouse.pressed() ) {
+            Object.assign(document.createElement('a'), {
+                target: '_blank',
+                href: 'https://orteil.dashnet.org/cookieclicker/',
+            }).click();
         }
 
         if ( this.screen == 'menu' ) {
@@ -87,6 +94,15 @@ class Controller {
 
         this.trainingButton = new Sprite(windowWidth/2, windowHeight/2 + 40, 200, 70, 'static');
         this.trainingButton.text = "im a train";
+
+        this.backButton = new Sprite(140, 55, 200, 40, 'static');
+        this.backButton.text = "<< Back to the menu";
+        this.backButton.visible = 0;
+
+        this.redirectButton = new Sprite(140, 105, 200, 40, 'static');
+        this.redirectButton.text = "Play the original Cookie Clicker";
+        this.redirectButton.color = "green";
+        this.redirectButton.visible = 0;
     }
 
     doPlay() {
@@ -97,8 +113,8 @@ class Controller {
         this.bigBrain.spawn(windowWidth/2,windowHeight/2);
         this.smallBrain.spawn(windowWidth/2 - 50,windowHeight/2 + 40);
         
-        this.bigBrain.play();
-        this.smallBrain.play();
+        this.bigBrain.play(271);
+        this.smallBrain.play(166);
     }
 
     doSimulation() {

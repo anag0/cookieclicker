@@ -5,7 +5,7 @@
 <!--<link href="https://fonts.googleapis.com/css?family=Kavoon&subset=latin,latin-ext" rel="stylesheet" type="text/css">-->
 <link href='https://fonts.googleapis.com/css?family=Merriweather:900&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 
-<title>Cookie Clicker</title>
+<title>Cookie Clicker AI Experiment</title>
 <!--
 Code and graphics copyright Orteil, 2013-2022
 Feel free to alter this code to your liking, but please do not re-host it, do not profit from it and do not present it as your own.
@@ -22,6 +22,9 @@ var App=typeof App==='undefined'?0:App;
 </script>
 
 <link href="style.css?v=5" rel="stylesheet" type="text/css">
+<script>
+	localStorage.setItem('CookieClickerLang', 'EN');
+</script>
 <script  src="main.js?v=5"></script>
 
 
@@ -38,7 +41,11 @@ var App=typeof App==='undefined'?0:App;
 
 <div id="wrapper">
 
-	<div id="topBar">
+	<div id="topBar" style="display:flex; justify-content: center;">
+		<div>This is not a playable version of Cookie Clicker, please go to: https://orteil.dashnet.org/cookieclicker/</div>
+	</div>
+	<div id="topBar2" style="display:none;">
+		<div>This is not a playable version, please go to: https://orteil.dashnet.org/cookieclicker/</div>
 		<div><b style="font-weight:bold;">Cookie Clicker</b>&trade; &copy; <a href="//orteil.dashnet.org" target="_blank" id="topbarOrteil">Orteil</a>, 2022 - <a href="//dashnet.org" target="_blank" id="topbarDashnet">DashNet</a></div>
 		<div><a href="https://twitter.com/orteil42" target="_blank" id="topbarTwitter">twitter</a></div>
 		<div><a href="https://orteil42.tumblr.com" target="_blank" id="topbarTumblr">tumblr</a></div>
@@ -146,7 +153,7 @@ var App=typeof App==='undefined'?0:App;
 				
 
 				
-				<div class="supportComment">^ Sponsored link ^</div>
+				
 			</div>
 			<!-- /ad -->
 			<div id="store">
@@ -160,7 +167,7 @@ var App=typeof App==='undefined'?0:App;
 			<!-- ad -->
 			<div id="detectAds" class="adBanner" style="background:transparent;width:1px;height:1px;"></div>
 			<div id="support" style="margin-top:130px;">
-				<div class="supportComment">v Sponsored links v</div>
+			
 				<div style="position:relative;">
 				
 					<div style="position:relative;z-index:100;min-height:250px;">

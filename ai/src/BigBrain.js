@@ -142,7 +142,6 @@ class BigBrain {
     }
 
     showSpokenText() {
-        //console.log(this.spokenText);
         if ( this.spokenText != '' ) {
             image( BigBrain.textBubble, this.x + 30 , this.y - 140 );
             textSize(16);

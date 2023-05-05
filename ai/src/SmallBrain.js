@@ -3,6 +3,7 @@ class SmallBrain {
     misses = 0;
     objectHits = 0;
     objectMisses = 0;
+    objectHitFitnessMultiplier = 10;
     bullets = [];
     holes = [];
     shake = false;
@@ -14,7 +15,6 @@ class SmallBrain {
         this.cookieClickChance = cookieClickChance;
         this.training = training;
         this.sound = sound;
-        SmallBrain.lastSoundTriggered = 0;
     }
 
     playOnce() {
@@ -44,8 +44,10 @@ class SmallBrain {
     }
 
     fitness() {
-        if ( (this.hits + this.misses + this.objectHits*1000 + this.objectMisses*1000) > 0 ) {
-            return (this.hits + (this.objectHits*1000) ) / (this.hits + this.misses + this.objectHits*1000 + this.objectMisses*1000);
+        // God help us
+        if ( (this.hits + this.misses + this.objectHits*this.objectHitFitnessMultiplier + this.objectMisses*this.objectHitFitnessMultiplier) > 0 ) {
+            return ( this.hits + (this.objectHits*this.objectHitFitnessMultiplier) ) / 
+                ( this.hits + this.misses + this.objectHits*this.objectHitFitnessMultiplier + this.objectMisses*this.objectHitFitnessMultiplier );
         } else {
             return 0;
         }
@@ -67,10 +69,7 @@ class SmallBrain {
         this.bullets.push( bullet );
 
         if ( this.sound ) {
-            if ( (Date.now() - SmallBrain.lastSoundTriggered) > 100 ) {
-                SmallBrain.shot.play();
-                SmallBrain.lastSoundTriggered = Date.now();
-            }
+            SmallBrain.shot.play();
         }
 
         if ( hit ) {
@@ -91,10 +90,7 @@ class SmallBrain {
         await bullet.moveTo(coordinates, 35);
         this.bulletHole(coordinates);
         if ( this.sound ) {
-            if ( !hit && (Date.now() - SmallBrain.lastSoundTriggered) > 200 ) {
-                SmallBrain.ricochet.play();
-                SmallBrain.lastSoundTriggered = Date.now();
-            }
+            SmallBrain.ricochet.play();
         }
         bullet.remove();
         this.bullets.shift();
